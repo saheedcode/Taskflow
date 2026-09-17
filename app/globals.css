@@ -1,0 +1,188 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---- Theme tokens ----
+ * Every color below is a space-separated "R G B" triplet (not a hex
+ * string) so tailwind.config.js's withOpacity() helper can compose it
+ * into rgb(var(...) / <alpha>) and still support opacity modifiers like
+ * bg-canvas/60. .dark overrides every token :root defines EXCEPT it
+ * deliberately doesn't touch ink-900/800/700 — those live as fixed hex
+ * values directly in tailwind.config.js because they're the app's
+ * permanent dark-navy chrome (sidebar, modal scrims, toasts), which
+ * looks the same regardless of light/dark mode by design, the same way
+ * a lot of apps keep one dark sidebar regardless of theme.
+ *
+ * Design intent for dark mode specifically: rather than inventing a new
+ * palette, --color-surface (dark) reuses the exact navy that IS
+ * ink-900/light-mode-ink (20 22 43) — so a card in dark mode is the same
+ * ink navy that was already this brand's signature dark color in light
+ * mode, just promoted to be the elevated surface instead of text. Accent
+ * and status colors are each brightened/desaturated slightly from their
+ * light-mode value, not reused verbatim — a saturated indigo/green/amber
+ * that reads correctly on white looks muddy or overly neon on near-black,
+ * so each got an independent pass for contrast and comfort, not just an
+ * automatic invert.
+ */
+:root {
+  --color-canvas: 245 246 248;
+  --color-surface: 255 255 255;
+  --color-ink: 20 22 43;
+  --color-ink-muted: 107 112 128;
+  --color-ink-faint: 156 160 175;
+  --color-border: 228 230 236;
+  --color-border-soft: 236 237 242;
+  --color-accent: 52 87 213;
+  --color-accent-dark: 39 67 172;
+  --color-accent-light: 234 239 252;
+  --color-success: 43 182 115;
+  --color-success-light: 229 247 238;
+  --color-warn: 226 166 59;
+  --color-warn-light: 251 241 222;
+  --color-danger: 229 87 63;
+  --color-danger-light: 252 233 229;
+  --color-violet: 139 92 246;
+  --color-violet-light: 241 236 254;
+
+  --shadow-card: 0 1px 2px rgba(20, 22, 43, 0.06);
+  --shadow-md: 0 10px 30px rgba(20, 22, 43, 0.1);
+  --shadow-pop: 0 24px 60px rgba(20, 22, 43, 0.28);
+
+  --scrollbar-thumb: rgba(20, 22, 43, 0.14);
+  --scrollbar-thumb-hover: rgba(20, 22, 43, 0.22);
+  --skeleton-shimmer: rgba(255, 255, 255, 0.55);
+
+  color-scheme: light;
+}
+
+.dark {
+  /* Redesigned dark palette. The old version reused ink-900 (20 22 43)
+     as --color-surface on top of an almost-identical canvas (11 12 22)
+     — only a ~9/channel difference — so cards barely separated from the
+     page and everything read as one flat, dull slab. This version keeps
+     the same near-black navy *canvas* but gives surfaces real lift
+     (visibly lighter + slightly more saturated navy), gives borders
+     enough contrast to actually read as a line rather than a suggestion,
+     and pushes accent/status colors brighter and more saturated so they
+     still pop against a dark background instead of looking washed out. */
+  --color-canvas: 9 10 18;
+  --color-surface: 31 34 60;
+  --color-ink: 240 241 250;
+  --color-ink-muted: 174 179 202;
+  --color-ink-faint: 122 127 153;
+  --color-border: 58 62 96;
+  --color-border-soft: 44 47 78;
+  --color-accent: 130 157 255;
+  --color-accent-dark: 172 191 255;
+  --color-accent-light: 42 48 94;
+  --color-success: 70 214 156;
+  --color-success-light: 19 59 48;
+  --color-warn: 247 191 89;
+  --color-warn-light: 64 47 18;
+  --color-danger: 251 125 104;
+  --color-danger-light: 64 33 30;
+  --color-violet: 183 160 255;
+  --color-violet-light: 48 40 86;
+
+  /* Dark surfaces need less drop shadow (there's little contrast to sell
+     depth with against a near-black canvas) and benefit from a faint
+     inset top highlight instead, which is what actually reads as
+     "elevated" on a dark UI rather than a shadow that just disappears. */
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.55);
+  --shadow-pop: 0 24px 60px rgba(0, 0, 0, 0.65);
+
+  --scrollbar-thumb: rgba(255, 255, 255, 0.16);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.26);
+  --skeleton-shimmer: rgba(255, 255, 255, 0.08);
+
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    border-color: rgb(var(--color-border));
+  }
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background-color: rgb(var(--color-canvas));
+    color: rgb(var(--color-ink));
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  ::selection {
+    background-color: rgb(var(--color-accent-light));
+    color: rgb(var(--color-accent-dark));
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--color-accent));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar {
+    height: 9px;
+    width: 9px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scroll-snap-x {
+    scroll-snap-type: x mandatory;
+  }
+  .scroll-snap-start {
+    scroll-snap-align: start;
+  }
+
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: rgb(var(--color-border-soft));
+  }
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--skeleton-shimmer),
+      transparent
+    );
+    animation: skeleton-shimmer 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
