@@ -14,7 +14,7 @@ const SIDEBAR_KEY = "tf_sidebar_collapsed";
 
 function isOverdue(dueDate) {
   if (!dueDate) return false;
-  return new Date(dueDate + "T23:59:59") < new Date();
+  return new Date(`${dueDate.slice(0, 10)}T23:59:59`) < new Date();
 }
 
 function startOfDay(d) {
@@ -25,7 +25,8 @@ function startOfDay(d) {
 
 function formatDue(dateStr) {
   if (!dateStr) return null;
-  const d = new Date(dateStr + "T00:00:00");
+  const d = new Date(`${dateStr.slice(0, 10)}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return null;
   return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
 }
 
@@ -34,7 +35,7 @@ function formatDue(dateStr) {
 // trailing "No due date" group instead of being silently dropped.
 function bucketFor(dueDate, today) {
   if (!dueDate) return "none";
-  const due = startOfDay(new Date(dueDate + "T00:00:00"));
+  const due = startOfDay(new Date(`${dueDate.slice(0, 10)}T00:00:00`));
   const diffDays = Math.round((due - today) / 86400000);
   if (diffDays < 0) return "overdue";
   if (diffDays === 0) return "today";

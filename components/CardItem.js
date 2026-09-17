@@ -5,13 +5,14 @@ import { initialsFor, colorForId } from "@/lib/avatar";
 
 function formatDue(dateStr) {
   if (!dateStr) return null;
-  const d = new Date(dateStr + "T00:00:00");
+  const d = new Date(`${dateStr.slice(0, 10)}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return null;
   return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
 function isOverdue(dateStr) {
   if (!dateStr) return false;
-  return new Date(dateStr + "T23:59:59") < new Date();
+  return new Date(`${dateStr.slice(0, 10)}T23:59:59`) < new Date();
 }
 
 // Short, stable "TF-xx" style code derived from the card id — purely a

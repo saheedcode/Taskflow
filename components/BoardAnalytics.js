@@ -15,7 +15,7 @@ const STAGE_COLORS = ["#9CA0AF", "#3457D5", "#E2A63B", "#2BB673", "#8B5CF6"];
 
 function isOverdue(dueDate) {
   if (!dueDate) return false;
-  return new Date(dueDate + "T23:59:59") < new Date();
+  return new Date(`${dueDate.slice(0, 10)}T23:59:59`) < new Date();
 }
 
 export default function BoardAnalytics({ initialBoard }) {

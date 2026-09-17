@@ -25,7 +25,7 @@ const SIDEBAR_KEY = "tf_sidebar_collapsed";
 
 function isOverdue(dueDate) {
   if (!dueDate) return false;
-  return new Date(dueDate + "T23:59:59") < new Date();
+  return new Date(`${dueDate.slice(0, 10)}T23:59:59`) < new Date();
 }
 
 function relativeTime(iso) {

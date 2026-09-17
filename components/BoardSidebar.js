@@ -110,13 +110,13 @@ export default function BoardSidebar({
       <button
         type="button"
         onClick={() => go("/workspace")}
-        title="All boards"
+        title="Back to boards"
         className={`mt-auto flex items-center gap-2.5 rounded-card px-2 py-2 text-[14px] font-medium text-white/45 hover:bg-white/5 hover:text-white/80 ${
           collapsed ? "justify-center" : ""
         }`}
       >
         <BackIcon />
-        {collapsed ? null : "All boards"}
+        {collapsed ? null : "Back to boards"}
       </button>
     </div>
   );
